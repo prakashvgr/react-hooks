@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+import CharPicker from './components/CharPicker';
+import Character from './components/Character';
+
+const App = props => {
+  const [destroyed, setDestroyed] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState(1);
+  const [chosenSide, setChosenSide] = useState('light');
+
+  const sideHandler = side => {
+    setChosenSide(side);
+  };
+
+  const charSelectHandler = event => {
+    const charId = event.target.value;
+    setSelectedCharacter(charId);
+  };
+
+  const destructionHandler = () => {
+    setDestroyed(true);
+  };
+
+  let content = (
+    <React.Fragment>
+      <CharPicker
+        side={chosenSide}
+        selectedChar={selectedCharacter}
+        onCharSelect={charSelectHandler}
+      />
+      <Character selectedChar={selectedCharacter} />
+      <button onClick={sideHandler.bind(this, 'light')}>Light Side</button>
+      <button onClick={sideHandler.bind(this, 'dark')}>Dark Side</button>
+      {chosenSide === 'dark' && (
+        <button onClick={destructionHandler}>DESTROY!</button>
+      )}
+    </React.Fragment>
   );
-}
+
+  if (destroyed) {
+    content = <h1>Total destruction!</h1>;
+  }
+  return content;
+};
 
 export default App;
